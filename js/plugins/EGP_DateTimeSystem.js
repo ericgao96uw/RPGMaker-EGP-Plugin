@@ -141,7 +141,6 @@ EricG.DateTime.version = 1.0;
         const stageLength = EricG.DateTime.Param.StageList.length;
         const newStage = (currentStage + steps + stageLength) % stageLength;
         $gameSystem._EGP_DateTime_CurrentStage = newStage;
-        console.log(`After foward stage, current stage=${EricG.DateTime.getCurrentStage()}`)
     }
 
     EricG.DateTime.nextStage = function() {
@@ -161,7 +160,6 @@ EricG.DateTime.version = 1.0;
     }
 
     EricG.DateTime.getStageStr = function() {
-        console.log(`Current stage=${EricG.DateTime.getCurrentStage()}`)
         return EricG.DateTime.Param.StageList[EricG.DateTime.getCurrentStage()].trim() || "Unknown Stage";
     }
 
@@ -187,7 +185,6 @@ EricG.DateTime.version = 1.0;
 
     Sprite_DateDisplay.prototype.refresh = function() {
         const text = `${EricG.DateTime.getDateStr()} ${EricG.DateTime.getStageStr()}`
-        console.log(`Updating date display with text=${text}`)
         this.setText(text)
     }
 
