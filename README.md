@@ -1,58 +1,69 @@
-# 🎮 EricG 的 RPG Maker MV 插件合集 / RPG Maker MV Plugins by EricG
+# 🎮 RPGMaker-EGP-Plugin
 
-欢迎来到本仓库！这里是我为 **RPG Maker MV** 开发的所有插件合集。所有插件均采用 **MIT License** 开源发布，欢迎自由使用、修改和分享。
+本仓库（RPGMaker-EGP-Plugin）收录作者 EricG 为 RPG Maker 系列开发的插件，包含对 RPG Maker MV（RMMV）与 RPG Maker MZ（RMMZ）两种引擎的插件实现。
 
-Welcome to my collection of **RPG Maker MV plugins**. All plugins in this repository are open-source under the **MIT License**, and you're welcome to use, modify, and distribute them freely.
-
----
-
-## 📦 插件列表 / Plugin List
-
-| 插件名称 Plugin Name | 简介 Description | 链接 Link |
-|----------------------|------------------|------------|
-| `DateTimeSystem`     | 添加日期与时段系统，支持显示、跳转与持久保存。<br>A flexible in-game date & stage system with UI and persistence. | [`js/plugins/EGP_DateTimeSystem.js`](./js/plugins/EGP_DateTimeSystem.js) |
-<!-- 未来插件继续添加在这里 -->
-| _更多插件开发中_ / More coming soon... | | |
+This repository (RPGMaker-EGP-Plugin) contains plugins for both RPG Maker MV and RPG Maker MZ by EricG.
 
 ---
 
-## 📄 使用条款 / License
+## 📦 本仓库包含的插件 / Included plugins
 
-本仓库中的所有插件均使用 **MIT License** 协议：
+目前仓库中包含的主要插件：
 
-- ✅ 免费使用 / Free to use
-- ✅ 商业或非商业项目皆可 / Allowed for commercial and non-commercial use
-- ✅ 可修改、二次开发 / You can modify and build upon the plugins
-- 🔗 保留原始许可声明 / Please retain the original license notice
+- RPG Maker MV: `RMMV-Plugin/EGP_DateTimeSystem.js` — 日期/时间系统，支持显示、跳转与持久化保存。
+- RPG Maker MZ: `RMMZ-Plugin/EGPMZ_DateTimeSystem.js` — 为 MZ 适配的同类日期/时间系统插件（接口与行为可能与 MV 版有所不同）。
 
-查看完整内容请见 [LICENSE](./LICENSE)。
+后续会在仓库中继续添加更多插件与文档。
 
 ---
 
-## 💡 使用方式 / How to Use
+## � 快速使用指南 / Quick start
 
-1. 下载你需要的插件文件（在 `js/plugins/` 目录下）。
-2. 将插件添加到你的 RPG Maker MV 项目中。
-3. 在插件管理器中启用插件，按需设置参数。
-4. 阅读插件头部的说明或示例注释，了解具体用法。
+1. 选择对应引擎的插件文件并复制到你的项目插件目录：
+	- 对于 MV：将 `RMMV-Plugin/EGP_DateTimeSystem.js` 复制到 RPG Maker MV 项目的 `js/plugins/` 下。
+	- 对于 MZ：将 `RMMZ-Plugin/EGPMZ_DateTimeSystem.js` 复制到 RPG Maker MZ 项目的 `js/plugins/` 下。
+2. 打开 RPG Maker 的插件管理器（Plugin Manager），添加并启用对应插件。
+3. 在插件参数中按需配置（插件头部注释中通常有参数说明）。
 
-Download the plugin file(s) you need from the `js/plugins/` folder.  
-Add them to your project and enable them via the plugin manager.
+更多使用示例请查看各插件文件头部的注释说明。
+
+---
+
+## 📁 仓库结构 / Repository layout
+
+简要说明当前仓库的文件结构：
+
+```
+RPGMaker-EGP-Plugin/
+├─ LICENSE
+├─ README.md
+├─ RMMV-Plugin/
+│  └─ EGP_DateTimeSystem.js      # MV 版插件
+└─ RMMZ-Plugin/
+	└─ EGPMZ_DateTimeSystem.js    # MZ 版插件
+```
+
+---
+
+## 📄 许可 / License
+
+本仓库采用 MIT 许可证（见 `LICENSE` 文件）。使用或修改本仓库代码时，请保留原始许可声明。
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ---
 
 ## 📬 反馈与贡献 / Feedback & Contribution
 
-欢迎你通过以下方式参与改进或提供反馈：
+欢迎提交 Issue 报告 bug 或提出功能建议，也欢迎通过 Pull Request 来贡献代码或文档修正。请在贡献前阅读代码与插件头部注释以了解设计决策。
 
-- 提交 [Issue](https://github.com/你的用户名/你的仓库/issues) 反馈问题或建议  
-- 创建 Pull Request 一起改进插件  
-- Star ⭐️ 支持本项目的发展！
+- Issues: https://github.com/ericgao96uw/RPGMaker-EGP-Plugin/issues
+- Pull requests: https://github.com/ericgao96uw/RPGMaker-EGP-Plugin/pulls
 
-Feel free to submit issues or pull requests — any feedback is appreciated!
+感谢你的关注与支持！
 
 ---
 
-感谢支持！希望这些插件能为你的 RPG 制作之路带来更多灵感和便利。
+作者 / Author: EricG
 
-Thanks for your support — happy RPG making! 🚀
+最后更新: 2025-10-04
