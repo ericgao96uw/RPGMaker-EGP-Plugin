@@ -35,6 +35,10 @@ EricG.DateTime.version = 1.0;
  * - DateFormatStr    
  *   # The date format string that helps format the date to string 
  *   # (e.g. {YYYY}-{MM}-{DD}).
+ * - DateVariableID
+ *   # The game variable ID that stores the current date as a string.
+ * - StageVariableID
+ *   # The game variable ID that stores the current stage index (0-based).
  * 
  * ==========================================================================
  * Plugin Command
@@ -67,6 +71,33 @@ EricG.DateTime.version = 1.0;
  * @param DateFormatStr
  * @desc The date format string that helps format the date to string (e.g. {YYYY}-{MM}-{DD}).
  * @default {YYYY}-{MM}-{DD}
+ *
+ * @param ShowWeekDay
+ * @type boolean
+ * @on Show
+ * @off Hide
+ * @default false
+ * @desc Whether to show the weekday name in the date display.
+ *
+ * @param WeekDayNames
+ * @desc A list of weekday names (start at Sunday), separated by commas (e.g. "Sun,Mon,Tue,Wed,Thu,Fri,Sat").
+ * @type string
+ * @default Sun,Mon,Tue,Wed,Thu,Fri,Sat
+ *
+ * @param DateVariableID
+ * @type variable
+ * @desc The game variable ID that stores the current date as a string.
+ * @default 0
+ *
+ * @param WeekDayVariableID
+ * @type variable
+ * @desc The game variable ID that stores the current weekday index (0=Sun, 1=Mon, ..., 6=Sat).
+ * @default 0
+ *
+ * @param StageVariableID
+ * @type variable
+ * @desc The game variable ID that stores the current stage index (0-based).
+ * @default 0
  * 
  * @command show
  * @text Show
@@ -126,7 +157,11 @@ EricG.DateTime.version = 1.0;
     EricG.DateTime.Param.StartDateStr = parameters["StartDate"] || "2025-01-01";
     EricG.DateTime.Param.StageList = (parameters["Stages"] || "Morning,Noon,Afternoon").split(',');
     EricG.DateTime.Param.DateFormatStr = parameters["DateFormatStr"] || "{YYYY}-{MM}-{DD}";
-
+    EricG.DateTime.Param.ShowWeekDay = (parameters["ShowWeekDay"] || "false").toLowerCase() === "true";
+    EricG.DateTime.Param.WeekDayNames = (parameters["WeekDayNames"] || "Sun,Mon,Tue,Wed,Thu,Fri,Sat").split(',');
+    EricG.DateTime.Param.DateVariableID = Number(parameters["DateVariableID"] || 0);
+    EricG.DateTime.Param.WeekDayVariableID = Number(parameters["WeekDayVariableID"] || 0);
+    EricG.DateTime.Param.StageVariableID = Number(parameters["StageVariableID"] || 0);
     
     // Plugin Commands
     PluginManager.registerCommand(pluginName, "show", args => {
@@ -142,32 +177,62 @@ EricG.DateTime.version = 1.0;
         const dateStr = String(args.date);
         EricG.DateTime.setDate(dateStr);
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveDateToVariable();
+        saveWeekDayToVariable();
     });
 
     PluginManager.registerCommand(pluginName, "setStage", args => {
         EricG.DateTime.setStage(parseInt(args.stageIndex));
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveStageToVariable();
     });
 
     PluginManager.registerCommand(pluginName, "advanceDays", args => {
         EricG.DateTime.advanceDays(parseInt(args.days));
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveDateToVariable();
+        saveWeekDayToVariable();
     });
 
     PluginManager.registerCommand(pluginName, "advanceStages", args => {
         EricG.DateTime.advanceStages(parseInt(args.stages));
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveStageToVariable();
     });
 
     PluginManager.registerCommand(pluginName, "nextDay", args => {
         EricG.DateTime.nextDay();
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveDateToVariable();
+        saveWeekDayToVariable();
     });
 
     PluginManager.registerCommand(pluginName, "nextStage", args => {
         EricG.DateTime.nextStage();
         EricG.DateTime.getDateDisplaySprite().refresh();
+        saveStageToVariable();
     });
+
+    function saveDateToVariable() {
+        if (EricG.DateTime.Param.DateVariableID > 0) {
+            const dateISOStr = EricG.DateTime.getCurrentDate().toISOString().split('T')[0]; // "YYYY-MM-DD"
+            $gameVariables.setValue(EricG.DateTime.Param.DateVariableID, dateISOStr);
+        }
+    }
+
+    function saveWeekDayToVariable() {
+        if (EricG.DateTime.Param.WeekDayVariableID > 0) {
+            const weekDayIndex = EricG.DateTime.getCurrentDate().getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            $gameVariables.setValue(EricG.DateTime.Param.WeekDayVariableID, weekDayIndex);
+        }
+    }
+
+    function saveStageToVariable() {
+        if (EricG.DateTime.Param.StageVariableID > 0) {
+            const stageIndex = EricG.DateTime.getCurrentStage();
+            $gameVariables.setValue(EricG.DateTime.Param.StageVariableID, stageIndex);
+        }
+    }
 
     EricG.DateTime.getCurrentDate = function() {
         if (!$gameSystem._EGP_DateTime_CurrentDate) {
@@ -194,8 +259,7 @@ EricG.DateTime.version = 1.0;
         const year = parseInt(parts[0]);
         const month = parseInt(parts[1]) - 1; // JS Month is 0-indexed
         const day = parseInt(parts[2]);
-        const date = new Date(year, month, day);
-        $gameSystem._EGP_DateTime_CurrentDate = date;
+        $gameSystem._EGP_DateTime_CurrentDate = new Date(year, month, day);
     }
 
     EricG.DateTime.setStage = function(stageIndex) {
@@ -214,8 +278,7 @@ EricG.DateTime.version = 1.0;
     EricG.DateTime.advanceStages = function(steps) {
         const currentStage = EricG.DateTime.getCurrentStage();
         const stageLength = EricG.DateTime.Param.StageList.length;
-        const newStage = (currentStage + steps + stageLength) % stageLength;
-        $gameSystem._EGP_DateTime_CurrentStage = newStage;
+        $gameSystem._EGP_DateTime_CurrentStage = (currentStage + steps + stageLength) % stageLength;
     }
 
     EricG.DateTime.nextStage = function() {
@@ -268,12 +331,19 @@ EricG.DateTime.version = 1.0;
     }      
 
     EricG.DateTime.formatDateStr = function(date, formatStr) {
-        return formatStr
+        const dateStr = formatStr
             .replace("{YYYY}", date.getFullYear())
             .replace("{MM}", String(date.getMonth() + 1).padStart(2, '0'))
             .replace("{M}", date.getMonth() + 1)
             .replace("{DD}", String(date.getDate()).padStart(2, '0'))
             .replace("{D}", date.getDate());
+
+        if (EricG.DateTime.Param.ShowWeekDay) {
+            const weekDayName = EricG.DateTime.Param.WeekDayNames[date.getDay()] || "";
+            return `${dateStr} (${weekDayName})`;
+        } else {
+            return dateStr;
+        }
     };
 
 })();
